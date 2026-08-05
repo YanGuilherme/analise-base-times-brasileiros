@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: minutagem-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: minutagem
+      POSTGRES_PASSWORD: minutagem
+      POSTGRES_DB: minutagem
+    ports:
+      - "5432:5432"
+    volumes:
+      - minutagem_data:/var/lib/postgresql/data
+      - ./schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U minutagem -d minutagem"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  minutagem_data:
